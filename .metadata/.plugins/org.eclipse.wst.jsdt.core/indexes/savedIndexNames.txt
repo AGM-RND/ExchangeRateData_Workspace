@@ -1,0 +1,11 @@
+INDEX VERSION 1.122+C:\ExchangeRateData_Workspace\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+239638576.index
+276737151.index
+3579927182.index
+2360863270.index
+1388361399.index
+3600756750.index
+528407033.index
+2057218496.index
+1803558609.index
+1402181261.index

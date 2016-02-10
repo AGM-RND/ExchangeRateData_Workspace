@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<script src="jquery/jquery-1.11.1.min.js"></script>
+
+<script src="jquery/jquery-ui-1.11.2.custom/jquery-ui.js"></script>
+<script src="jquery/jquery.jqGrid-4.6.0/js/jquery.jqGrid.min.js"></script>
+<script src="jquery/jquery.jqGrid-4.6.0/js/i18n/grid.locale-en.js"></script>
+
+<link rel="stylesheet" type="text/css" href="jquery/silviomoreto-bootstrap-select/dist/css/bootstrap-select.css">
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+<script type="text/javascript" src="jquery/silviomoreto-bootstrap-select/dist/js/bootstrap-select.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="jquery/jquery-ui-1.11.2.custom/themes/ui-darkness/jquery-ui.css">
+<link rel="stylesheet" href="jquery/jquery.jqGrid-4.6.0/css/ui.jqgrid.css">
+
+<link rel="stylesheet" href="custom/exrd.css">
+<style>
+.ui-jqgrid {font-size:3.8em}
+.form-field{background-color: white}
+input, select {color:black !important;}
+</style>
+ 
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Welcome to Exchange Rate Web portal</title>
+<script>
+    $( document ).ready(function() {
+		$( ".datepicker" ).datepicker({ 
+			changeYear: true ,
+			dateFormat: "yy-mm-dd"
+		});
+		$( "input[type=submit]")
+		  .click(function( event ) {
+			event.preventDefault();
+			testajax();
+		  });
+		
+		$.ajax({
+	        type: "GET",
+	        url:"/ExRateSvc/networkCurrencies",
+	        dataType: "json",
+	        success: function (data) {
+	            $.each(data.currency,function(i,data){
+	             	var div_data="<option value="+data.isoCurrCode+">"+data.name+"</option>";
+	            	$(div_data).appendTo('#srcCurrency'); 
+	            });
+	            $("#srcCurrency").selectpicker({
+	            	width: "100%"
+	            });
+			}
+	    });
+		
+		$.ajax({
+	        type: "GET",
+	        url:"/ExRateSvc/allActiveCurrencies",
+	        dataType: "json",
+	        success: function (data) {
+	            $.each(data.currency,function(i,data){
+	             	var div_data="<option value="+data.isoCurrCode+">"+data.name+"</option>";
+	            	$(div_data).appendTo('#targetCurrency'); 
+				});  
+	            $("#targetCurrency").selectpicker({
+	            	width: "100%"
+	            });
+	            $(".form-container").css("opacity", "1");
+	        }
+		});	
+    });
+    
+    function prepareDownloadURL(url){
+    	var stDate = $("#stDate").val();
+		stDate = stDate.replace(/-/g, '');
+		var endDate = $("#endDate").val();
+		endDate = endDate.replace(/-/g, '');
+		var srcCurrency = $("#srcCurrency").val();
+		var targetCurrency = $("#targetCurrency").val();
+    	var url = url + "/" + stDate + "/" + endDate + "/" + srcCurrency + "/" + targetCurrency;
+    	window.open(url);
+    	
+    }
+	
+	function testajax(){
+		var gridContainer = $("#gridCont").html("");
+		var tableList = $("<table>").attr("id", "list1");
+		var gridPager = $("<div>").attr("id", "gridpager");
+		tableList.appendTo(gridContainer);
+		gridPager.appendTo(gridContainer);
+		
+		var stDate = $("#stDate").val();
+		stDate = stDate.replace(/-/g, '');
+		var endDate = $("#endDate").val();
+		endDate = endDate.replace(/-/g, '');
+		var srcCurrency = $("#srcCurrency").val();
+		var targetCurrency = $("#targetCurrency").val();
+		var grid = jQuery("#list1").jqGrid({
+		   	url:"http://10.130.133.14:8443/ExRateSvc/name/Ashish/"+stDate+"/"+endDate+"/"+srcCurrency+"/"+targetCurrency+"/json",
+			datatype: "json",
+		   	colNames:['From Currency', 'To currency', 'Process Date', 'Rate'],
+		   	colModel:[
+		   		{name:'fromCur',index:'fromCur', width: '100%', fixed: true},
+		   		{name:'toCur',index:'fxRates', width: '100%', fixed: true},
+		   		{name:'processDate',index:'fxRates', width: '100%', formatter: dateFmatter},
+		   		{name:'fxRates',index:'fxRates', width: '100%', formatter: numberFmatter}
+		   	],
+		   	jsonReader : { 
+		   		root:"product",
+		        repeatitems: true,
+		        id: "0"
+		     },
+		   	rowNum:15,
+		   	height: "auto",
+		   	autowidth: true,
+		   	shrinkToFit: true,
+		   	loadonce: true,
+		   	autowidth: true,
+		   	rowList:[10,20,30],
+		   	pager: jQuery('#gridpager'),
+		   	sortname: 'id',
+		    viewrecords: true,
+		    sortorder: "desc",
+		    caption:"Exchange rate results",
+		    loadComplete: function(data) {
+		    	$("#download").show();
+		    }
+		}).navGrid('#gridpager',{edit:false,add:false,del:false});
+	}
+	
+	function dateFmatter(cellvalue, options, rowObject){
+		return $.datepicker.formatDate('dd M yy', new Date(cellvalue));
+	}
+	
+	function numberFmatter(cellvalue, options, rowObject){
+		return parseFloat(cellvalue).toFixed(3);
+	}
+	
+ 
+    </script>
+</head>
+<body style="margin-top:10px;">
+	<table border="0" width="100%">
+		<tr>
+			<td>
+				<div>
+			  		<img style="width: 70%;" src="images/RM.jpg">
+				</div>
+			</td>
+			<td>
+				<h1 style="text-align: center; font-size: 27px; font-weight: bold; font-family: Segoe UI,Arial,sans-serif; color: rgb(218, 0, 71);">Rakuten Exchange rate WebTool</h1>
+				<!-- <div class="ribbon"><div class="ribbon-stitches-top"></div><strong class="ribbon-content"><h1>Rakuten Exchange rate WebTool</h1></strong><div class="ribbon-stitches-bottom"></div></div> -->
+			</td>
+		</tr>
+		<tr>
+			<td colspan="1" valign="top">
+				<div class="form-container" style="float:left; opacity:0;">
+					<div class="form-title"><h2>Filters</h2></div>
+						<div class="form-title">From Date</div>
+						<input class="form-field datepicker" type="text" id="stDate" /><br />
+						<div class="form-title">To Date</div>
+						<input class="form-field datepicker" type="text" id="endDate" /><br />
+						<div class="form-title">From Currency</div>
+						<select id="srcCurrency" style="width:100%" data-live-search="true" data-style="btn-inverse">
+							<option value="*">All</option>
+						</select>
+						<div class="form-title"><br />To Currency</div>
+						<select id="targetCurrency" style="width:100%" data-live-search="true" data-style="btn-success">
+							<option value="*">All</option>
+						</select>
+						<div class="submit-container">
+						<input class="submit-button" type="submit" value="Submit" />
+					</div>
+				</div>
+			</td>
+			<td width="80%" valign="top">
+				<div id="gridCont" style="width:100%; float:left;"></div>
+				<div id="download" style="display:none; float:right;">
+					<table>
+						<tr>
+							<td>
+								<a href="#" onclick="prepareDownloadURL('ExRateSvc/pdf');"><img src="images/pdf.png"/></a>
+							</td>
+							<td>
+								<a href="#" onclick="prepareDownloadURL('ExRateSvc/excel');"><img src="images/excel.png" /></a>
+							</td>
+							<td>
+								<a href="#" onclick="prepareDownloadURL('ExRateSvc/excelx');"><img src="images/excelx.png" /></a>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" align="right">
+				
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

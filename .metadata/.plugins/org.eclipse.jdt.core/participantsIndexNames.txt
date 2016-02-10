@@ -1,0 +1,3 @@
+INDEX VERSION 1.126
+C:\ExchangeRateData_Workspace\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\3851888501.index
+\EJBs\ejbModule

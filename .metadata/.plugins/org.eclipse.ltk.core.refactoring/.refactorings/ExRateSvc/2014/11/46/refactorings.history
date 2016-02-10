@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;ExRateSvc/WebContent/custom/exrd.csss&apos; to &apos;exrd.css&apos;" description="Rename resource &apos;exrd.csss&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="WebContent/custom/exrd.csss" name="exrd.css" stamp="1415647538018" updateReferences="true"/>
+</session>

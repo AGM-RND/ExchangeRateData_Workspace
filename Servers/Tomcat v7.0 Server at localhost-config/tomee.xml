@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tomee>
+  <!-- see http://tomee.apache.org/containers-and-resources.html -->
+
+  <!-- activate next line to be able to deploy applications in apps -->
+  <!-- <Deployments dir="apps" /> -->
+ 
+  <Resource id="jdbc/ExRateJPA" type="DataSource">
+   JdbcDriver = oracle.jdbc.OracleDriver
+   JdbcUrl = jdbc:oracle:thin:@server:port:dbName
+   UserName = userName
+   Password = password
+   JtaManaged = true
+   InitialSize = 10
+   MaxActive = 50
+   MinIdle = 0
+   PoolPreparedStatements = true
+ </Resource>
+
+ <Resource id="jdbc/n.ExRateJPA" type="DataSource">
+   JdbcDriver = oracle.jdbc.OracleDriver
+   JdbcUrl = jdbc:oracle:thin:@server:port:dbName
+   UserName = userName
+   Password = password
+   JtaManaged = false
+ </Resource>
+ 
+  
+</tomee>

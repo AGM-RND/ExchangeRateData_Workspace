@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+	<persistence-unit name="ExRateJPA" transaction-type="JTA">
+		<provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+		<jta-data-source>jdbc/ExRateJPA</jta-data-source>
+		<non-jta-data-source>jdbc/n.ExRateJPA</non-jta-data-source>
+		<class>com.ls.entities.ExchangeRate</class>
+		<class>com.ls.entities.Currency</class>
+		<class>com.ls.entities.CurrencyNetwork</class>
+		<class>com.ls.entities.CurrencyNetworkPK</class>
+		<properties>
+			<property name="openjpa.Log" value="DefaultLevel=WARN, Runtime=INFO, Tool=INFO, SQL=TRACE"/>
+			<property name="openjpa.ConnectionFactoryProperties" value="PrettyPrint=true, PrettyPrintLineLength=120, PrintParameters=true"/>
+		</properties>
+	</persistence-unit>
+</persistence>
